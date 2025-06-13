@@ -1,0 +1,268 @@
+/* Estilos generales para el contenedor del DataTable */
+.data-table-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff; /* Fondo blanco para la tabla */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave para el contenedor principal */
+}
+
+/* Sección del encabezado (Título + Botón "Agregar nueva") */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem; /* Pequeño padding para alinear con el contenido de la tabla */
+}
+
+.list-header h1 {
+    color: #333;
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Botón "Agregar nueva" */
+.add-button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.add-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* --- Estilos Específicos para la Tabla --- */
+.list-content table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina el espacio entre las celdas */
+    margin-top: 1rem;
+    /* La sombra y el border-radius se manejan mejor en .data-table-container */
+}
+
+.list-content th,
+.list-content td {
+    padding: 12px 15px; /* Espaciado dentro de las celdas */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Línea separadora entre filas */
+    color: #444;
+}
+
+.list-content th {
+    background-color: #f8f8f8; /* Fondo más claro para los encabezados */
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 0.05em;
+    border-top: 1px solid #eee; /* Para una línea superior sutil en la tabla */
+}
+
+.list-content tr:nth-child(even) {
+    background-color: #fefefe; /* Color de fondo para filas pares */
+}
+
+.list-content tr:hover {
+    background-color: #f5f5f5; /* Efecto hover en las filas */
+}
+
+/* Estilos para la columna de acciones */
+.action-buttons {
+    display: flex;
+    gap: 8px; /* Espacio entre los botones de acción */
+    justify-content: flex-start; /* Alinea los botones a la izquierda en la celda */
+    flex-wrap: wrap; /* Permite que los botones se envuelvan si no hay espacio */
+}
+
+.action-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
+}
+
+/* Colores específicos para los botones de acción */
+.btn-blue {
+    background-color: #2196F3; /* Azul */
+    color: white;
+}
+.btn-blue:hover:not(:disabled) {
+    background-color: #1976D2;
+}
+
+.btn-yellow {
+    background-color: #FFC107; /* Ámbar */
+    color: #333; /* Texto oscuro para contraste */
+}
+.btn-yellow:hover:not(:disabled) {
+    background-color: #FFA000;
+}
+
+.btn-red {
+    background-color: #F44336; /* Rojo */
+    color: white;
+}
+.btn-red:hover:not(:disabled) {
+    background-color: #D32F2F;
+}
+
+.action-buttons button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estilo para el "badge" de Donante/No Donante dentro de la tabla */
+.donante-badge {
+    padding: 0.3em 0.6em;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap; /* Evita que el badge se rompa en varias líneas */
+    display: inline-block; /* Para que el padding y margen funcionen bien */
+}
+
+.donante-badge.donante {
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+}
+
+.donante-badge.no-donante {
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+}
+
+/* --- Mensajes de Estado (Carga, Error, Sin Datos) --- */
+.loading-indicator,
+.error-message,
+.no-data {
+    padding: 1.5rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.loading-indicator {
+    background-color: #e3f2fd; /* Azul claro */
+    color: #1976D2; /* Azul más oscuro */
+}
+
+.error-message {
+    background-color: #ffebee; /* Rojo claro */
+    color: #F44336; /* Rojo oscuro */
+}
+
+.no-data {
+    background-color: #f9f9f9;
+    color: #666;
+    font-style: italic;
+}
+
+/* --- PopUp de Confirmación --- */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente más oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-box {
+    background-color: #fff; /* Fondo blanco para el cuadro de diálogo */
+    padding: 2rem;
+    border-radius: 10px; /* Bordes más redondeados */
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25); /* Sombra más pronunciada */
+    text-align: center;
+}
+
+.confirmation-box h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.confirmation-box p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.delete-error {
+    background-color: #ffebee;
+    color: #F44336;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.confirmation-buttons {
+    display: flex;
+    justify-content: center; /* Centrar los botones en el modal */
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.confirm-button,
+.cancel-button {
+    padding: 0.8rem 1.8rem; /* Un poco más de padding */
+    border: none;
+    border-radius: 6px; /* Bordes más redondeados */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.confirm-button {
+    background-color: #F44336; /* Rojo de peligro */
+    color: white;
+}
+
+.cancel-button {
+    background-color: #9E9E9E; /* Gris secundario */
+    color: white;
+}
+
+.confirm-button:hover:not(:disabled) {
+    background-color: #D32F2F;
+}
+
+.cancel-button:hover:not(:disabled) {
+    background-color: #757575;
+}
+
+.confirm-button:disabled,
+.cancel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}

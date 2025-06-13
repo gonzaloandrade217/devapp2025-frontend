@@ -1,0 +1,41 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .buttons-container {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .boton-persona, .boton-auto {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .boton-persona {
+    background-color: #4285f4;
+    color: white;
+  }
+  
+  .boton-auto {
+    background-color: #34a853;
+    color: white;
+  }
+  
+  .boton-persona:hover {
+    background-color: #3367d6;
+  }
+  
+  .boton-auto:hover {
+    background-color: #2d9246;
+  }
