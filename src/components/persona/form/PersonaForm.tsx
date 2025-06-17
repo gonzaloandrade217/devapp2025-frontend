@@ -205,9 +205,12 @@ const PersonaForm: React.FC<PersonaFormProps> = ({
     <div className="form-group checkbox-group">
       <label>
         {readOnly ? (
-          <span className="read-only-value">
-            {formData.donanteOrganos ? 'Sí' : 'No'}
-          </span>
+          <>
+            <span className="label-text">Donante de órganos</span>
+            <span className="read-only-value">
+              {formData.donanteOrganos ? 'Sí' : 'No'}
+            </span>
+          </>
         ) : (
           <>
             <input

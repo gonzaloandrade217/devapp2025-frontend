@@ -5,7 +5,7 @@ const useCreatePersona = () => {
   const createPersona = async (personaData: Omit<Persona, 'id' | 'autos'>): Promise<boolean> => {
     try {
       const response = await api.post('/personas', personaData);
-      return response.status === 201; 
+      return response.status >= 200 && response.status < 300; 
     } catch (error) {
       console.error('Error creating persona:', error); 
       return false;

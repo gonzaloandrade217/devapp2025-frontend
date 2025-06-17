@@ -2,7 +2,7 @@ export interface Auto {
     id:           string;
     marca?:       string;
     modelo?:      string;
-    año?:         number;
+    anio?:        number;
     patente?:     string;
     color?:       string;
     numeroChasis?:string;

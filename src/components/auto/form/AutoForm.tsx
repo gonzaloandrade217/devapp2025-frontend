@@ -23,7 +23,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
     return {
       marca: data.marca || '',
       modelo: data.modelo || '',
-      año: data.año || 0,
+      anio: data.anio || 0,
       patente: data.patente || '',
       color: data.color || '',
       numeroChasis: data.numeroChasis || '',
@@ -39,17 +39,17 @@ const AutoForm: React.FC<AutoFormProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (Object.keys(initialData).length > 0 &&
-        (initialData.patente !== formData.patente || initialData.modelo !== formData.modelo || initialData.año !== formData.año)) {
+    if (initialData && JSON.stringify(initialData) !== JSON.stringify(formData)) {
       setFormData(getInitialFormData(initialData));
+      console.log('AutoForm: formData actualizado con initialData. Modelo:', initialData.modelo); // <-- Agrega un log para verificar
     }
-  }, [initialData, getInitialFormData, formData.patente, formData.modelo, formData.año]);
+  }, [initialData, getInitialFormData]);
 
   const validateForm = useCallback((): boolean => {
     const errors: Partial<Record<FormField, string>> = {
       marca: !formData.marca ? 'La marca es requerida.' : undefined,
       modelo: !formData.modelo ? 'El modelo es requerido.' : undefined,
-      año: (!formData.año || isNaN(Number(formData.año)) || Number(formData.año) <= 1900 || Number(formData.año) > new Date().getFullYear() + 1)
+      anio: (!formData.anio || isNaN(Number(formData.anio)) || Number(formData.anio) <= 1900 || Number(formData.anio) > new Date().getFullYear() + 1)
         ? 'Año inválido.'
         : undefined,
       patente: (!(formData.patente ?? '').trim())
@@ -77,7 +77,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
 
     setFormData(prev => ({
       ...prev,
-      [field]: (field === 'año') ? (parseInt(value) || 0) : value
+      [field]: (field === 'anio') ? (parseInt(value) || 0) : value
     }));
 
     setFieldErrors(prev => ({
@@ -116,7 +116,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
       <label>{label}:</label>
       {readOnly ? (
         <div className="read-only-value">
-          {field === 'año' || field === 'personaId' ? String(formData[field]) : formData[field]}
+          {field === 'anio' || field === 'personaId' ? String(formData[field]) : formData[field]}
         </div>
       ) : (
         <>
@@ -144,7 +144,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
       <form onSubmit={readOnly ? (e) => e.preventDefault() : handleSubmit}>
         {renderInputField('marca', 'Marca')}
         {renderInputField('modelo', 'Modelo')}
-        {renderInputField('año', 'Año', 'number')}
+        {renderInputField('anio', 'Año', 'number')}
         {renderInputField('patente', 'Patente')}
         {renderInputField('color', 'Color')}
         {renderInputField('numeroChasis', 'Número de Chasis')}
