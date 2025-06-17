@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/api';
 import { Auto } from '../tipos/Auto';
+import { transformarDatosAuto } from '../api/autos'; 
 
 interface UseAutosReturn {
   autos: Auto[];
@@ -29,19 +30,23 @@ const useAutos = (): UseAutosReturn => {
     deleteError: null
   })
 
-  const obtenerAutos = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null}))
-    try {
-      const response = await api.get<Auto[]>('/autos');
-      setState(prev => ({ ...prev, autos: response.data }));
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Error al cargar los autos';
-      setState(prev => ({ ...prev, error: errorMsg }));
-      console.error('Error fetching autos:', err);
-    } finally {
-      setState(prev => ({ ...prev, loading: false }));
-    }
-  }, []);
+const obtenerAutos = useCallback(async () => {
+  setState(prev => ({ ...prev, loading: true, error: null}));
+  try {
+    const response = await api.get<any[]>('/autos'); 
+
+    const autosTransformados = response.data.map(transformarDatosAuto);
+
+    console.log("useAutos: Autos transformados (con 'id'):", autosTransformados); 
+    setState(prev => ({ ...prev, autos: autosTransformados })); 
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.message || 'Error al cargar los autos';
+    setState(prev => ({ ...prev, error: errorMsg }));
+    console.error('Error fetching autos:', err);
+  } finally {
+    setState(prev => ({ ...prev, loading: false }));
+  }
+}, []);
   
   useEffect(() => {
     obtenerAutos();

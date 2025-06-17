@@ -1,7 +1,7 @@
 import { Auto } from '../tipos/Auto';
 import api from './api';
 
-function transformarDatosAuto(rawData: any): Auto {
+export function transformarDatosAuto(rawData: any): Auto {
     if (!rawData) {
         throw new Error("Datos crudos (rawData) inválidos proporcionados para transformarDatosAuto");
     }
@@ -70,4 +70,4 @@ export const obtenerAutos = async (): Promise<Auto[]> => {
         console.error('Error al obtener autos:', error);
         throw error;
     }
-};
+}
