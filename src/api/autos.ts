@@ -1,26 +1,36 @@
 import { Auto } from '../tipos/Auto';
-import api from './api';
+import api from './api'; 
 
 export function transformarDatosAuto(rawData: any): Auto {
     if (!rawData) {
         throw new Error("Datos crudos (rawData) inválidos proporcionados para transformarDatosAuto");
     }
 
-    const transformed: Auto = {
-        id: rawData._id ? (typeof rawData._id === 'object' && rawData._id.toHexString ? rawData._id.toHexString() : String(rawData._id)) : '',
-        marca: rawData.marca ?? undefined, 
-        modelo: rawData.modelo ?? undefined,
-        año: typeof rawData.año === 'number' ? rawData.año : (rawData.año ? parseInt(rawData.año) : undefined),
-        patente: rawData.patente ?? undefined,
-        color: rawData.color ?? undefined,
-        numeroChasis: rawData.numeroChasis ?? undefined,
-        numeroMotor: rawData.numeroMotor ?? undefined,
-        personaId: rawData.personaId ?? undefined,
-    };
-
-    if (isNaN(transformed.año as number)) {
-        transformed.año = undefined;
+    let parsedAnio: number | undefined;
+    if (typeof rawData.anio === 'number') {
+        parsedAnio = rawData.anio;
+    } else if (rawData.anio) {
+        const tempAnio = parseInt(rawData.anio);
+        if (!isNaN(tempAnio)) {
+            parsedAnio = tempAnio;
+        } else {
+            parsedAnio = undefined;
+        }
+    } else {
+        parsedAnio = undefined;
     }
+
+    const transformed: Auto = {
+        id: rawData._id ? (typeof rawData._id === 'object' && rawData._id.toHexString ? rawData._id.toHexString() : String(rawData._id)) : rawData.id || '',
+        marca: rawData.marca || undefined,
+        modelo: rawData.modelo || undefined,
+        anio: parsedAnio,
+        patente: rawData.patente || undefined,
+        color: rawData.color || undefined,
+        numeroChasis: rawData.nroChasis || undefined,
+        numeroMotor: rawData.nroMotor || undefined,
+        personaID: rawData.personaID || undefined,
+    };
 
     return transformed;
 }
@@ -33,12 +43,13 @@ function isAuto(data: any): data is Auto {
         
         (data.marca === undefined || typeof data.marca === 'string') &&
         (data.modelo === undefined || typeof data.modelo === 'string') &&
-        (data.año === undefined || typeof data.año === 'number') &&
+        (data.anio === undefined || typeof data.anio === 'number') && 
+        
         (data.patente === undefined || typeof data.patente === 'string') &&
         (data.color === undefined || typeof data.color === 'string') &&
         (data.numeroChasis === undefined || typeof data.numeroChasis === 'string') &&
         (data.numeroMotor === undefined || typeof data.numeroMotor === 'string') &&
-        (data.personaId === undefined || typeof data.personaId === 'string')
+        (data.personaID === undefined || typeof data.personaID === 'string')
     );
 }
 
@@ -71,3 +82,19 @@ export const obtenerAutos = async (): Promise<Auto[]> => {
         throw error;
     }
 }
+
+export const eliminarAuto = async (id: string): Promise<boolean> => {
+    try {
+        const response = await api.delete<{ message?: string }>(`/autos/${id}`);
+        
+        if (response.status === 200 || response.status === 204) {
+            return true;
+        } else {
+            const errorData = response.data;
+            throw new Error(errorData.message || `Error al eliminar el auto: ${response.status}`);
+        }
+    } catch (error: any) {
+        console.error('Error en la API al eliminar auto:', error);
+        throw new Error(error.message || 'Ocurrió un error desconocido al eliminar el auto.'); 
+    }
+};

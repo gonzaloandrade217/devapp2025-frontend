@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Genero, Persona } from '../../../tipos/Persona';
+import { PersonaFormData } from '../../../tipos/Persona';
 import '../../css/Form.css';
 
-type PersonaFormData = Omit<Persona, 'id' | 'autos'>;
 type FormField = keyof PersonaFormData;
 
-interface PersonaFormProps {
+export interface PersonaFormProps {
+  initialData?: Partial<Persona>;
   onSubmit: (data: PersonaFormData) => Promise<boolean>;
-  initialData?: Partial<PersonaFormData>;
-  isEdit?: boolean;
+  isEdit: boolean;
   readOnly?: boolean;
 }
 
@@ -21,7 +21,7 @@ const PersonaForm: React.FC<PersonaFormProps> = ({
   isEdit = false,
   readOnly = false
 }) => {
-   console.log("PersonaForm: initialData recibido:", initialData); // <-- ¡Añade este log!
+  console.log("PersonaForm: initialData recibido:", initialData); 
   console.log("PersonaForm: initialData.fechaNacimiento original:", initialData.fechaNacimiento);
   const getInitialFormData = useCallback((data: Partial<PersonaFormData>): PersonaFormData => {
     const fechaNacimiento = data.fechaNacimiento
@@ -112,44 +112,14 @@ const PersonaForm: React.FC<PersonaFormProps> = ({
       }
 
       const updatedFormData = { ...prev, [field]: newValue };
-    console.log("[handleChange] formData actualizado (antes de setFormData):", updatedFormData); // <-- Nuevo log
+    console.log("[handleChange] formData actualizado (antes de setFormData):", updatedFormData); 
     return updatedFormData;
   });
-
-      //return { ...prev, [field]: newValue };
-    //});
 
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: undefined }));
     }
   }, [fieldErrors]);
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("PersonaForm - handleSubmit iniciado."); 
-    console.log("PersonaForm - Valor de isSubmitting al inicio:", isSubmitting);
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const success = await onSubmit(formData);
-      if (!success) {
-        setError('No se pudo guardar. Verifica los datos o intenta más tarde.');
-        return;
-      }
-      navigate('/personas');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error desconocido';
-      setError(`Error: ${message}`);
-      console.error('Submission error:', err);
-    } finally {
-      setIsSubmitting(false);
-      console.log("PersonaForm - handleSubmit finalizado. isSubmitting puesto en FALSE.");
-    }
-  }, [formData, navigate, onSubmit, validateForm]);
 
   const renderTextField = (field: FormField, label: string) => (
     <div className="form-group">
@@ -235,7 +205,7 @@ const PersonaForm: React.FC<PersonaFormProps> = ({
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={readOnly ? (e) => e.preventDefault() : handleSubmit}>
+      <form> 
         {renderTextField('dni', 'DNI')}
         {renderTextField('nombre', 'Nombre')}
         {renderTextField('apellido', 'Apellido')}
@@ -243,32 +213,6 @@ const PersonaForm: React.FC<PersonaFormProps> = ({
         {renderSelectField()}
         {renderCheckboxField()}
 
-        {!readOnly && (
-          <div className="form-actions">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`submit-button ${isSubmitting ? 'submitting' : ''}`}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner"></span>
-                  Guardando...
-                </>
-              ) : (
-                'Guardar'
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/personas')}
-              className="cancel-button"
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </button>
-          </div>
-        )}
       </form>
     </div>
   );

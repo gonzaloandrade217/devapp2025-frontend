@@ -8,14 +8,10 @@ const AutosList: React.FC = () => {
   const { autos, error, loading, deleteAuto, isDeleting, deleteError, clearDeleteError } = useAutos(); 
   const navigate = useNavigate();
 
-  const handleAddNew = () => {
-    navigate('/autos/nuevo');
-  }
-
   const autoColumns: ColumnDefinition<Auto>[] = [
     { header: 'Marca', field: 'marca'},
     { header: 'Modelo', field: 'modelo'},
-    { header: 'Año', field: 'año'},
+    { header: 'Año', field: 'anio'},
     { header: 'Patente', field: 'patente'}
   ]
 
@@ -36,6 +32,17 @@ const AutosList: React.FC = () => {
       onClick: (_auto) => { /* La lógica del modal la maneja DataTable */ },
       isDeleteAction: true,
     },
+    {
+      label: 'Ver dueño',
+      className: 'btn-secondary',
+      onClick: (auto) => {
+        if (auto.personaID) { 
+          navigate(`/personas/${auto.personaID}`); 
+        } else {
+          console.warn(`El auto con patente ${auto.patente} no tiene un dueño asociado.`);
+        }
+      },
+    }
   ];
 
   return (
@@ -44,9 +51,6 @@ const AutosList: React.FC = () => {
         data={autos}
         columns={autoColumns}
         actions={autoActions}
-        onAdd={handleAddNew}
-        addBtnText="Agregar nuevo"
-        addBtnClassName="add-button primary"
         loading={loading}
         error={error}
         onDeleteConfirm={deleteAuto}

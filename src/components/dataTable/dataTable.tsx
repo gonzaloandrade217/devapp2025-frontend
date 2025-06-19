@@ -14,7 +14,7 @@ export interface ActionDefinition<T> {
   isDeleteAction?: boolean;
 }
 
-export interface DataTableProps<T extends { id: string }> { 
+export interface DataTableProps<T extends { id: string }> {
   title: string;
   data: T[];
   columns: ColumnDefinition<T>[];
@@ -27,10 +27,12 @@ export interface DataTableProps<T extends { id: string }> {
   loading?: boolean;
   error?: string | null;
 
-  onDeleteConfirm: (id: string) => Promise<boolean>; 
+  onDeleteConfirm: (id: string) => Promise<boolean>;
   isDeleting?: boolean;
   deleteError?: string | null;
   onClearDeleteError?: () => void;
+
+  showAddButton?: boolean;
 }
 
 const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
@@ -48,11 +50,12 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
     isDeleting = false,
     deleteError = null,
     onClearDeleteError,
+    showAddButton = true, 
   } = props;
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleDeleteClick = (id: string) => { 
+  const handleDeleteClick = (id: string) => {
     onClearDeleteError && onClearDeleteError();
     setDeletingId(id);
   };
@@ -60,7 +63,7 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
   const handleConfirm = async () => {
     if (!deletingId) return;
 
-    const success = await onDeleteConfirm(deletingId); 
+    const success = await onDeleteConfirm(deletingId);
     if (success) {
       setDeletingId(null);
     }
@@ -106,13 +109,12 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
 
   if (loading) return <div className="loading-indicator">Cargando {title.toLowerCase()}...</div>;
   if (error) return <div className="error-message">Error al cargar {title.toLowerCase()}: {error}</div>;
- // if (data.length === 0 && !loading && !error) return <div className="no-data">No hay {title.toLowerCase()} registrados.</div>;
 
   return (
     <div className="data-table-container">
       <header className="list-header">
         <h1>{title}</h1>
-        {onAdd && (
+        {onAdd && showAddButton && (
           <button
             className={addBtnClassName}
             onClick={onAdd}
@@ -125,42 +127,45 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
       </header>
       {(data.length === 0 && !loading && !error) ? (
         <div className="no-data">No hay {title.toLowerCase()} registrados.</div>
-      ) : (<section className="list-content">
-        <table>
-          <thead>
-            <tr>
-              {columns.map((col, index) => (
-                <th key={index}>{col.header}</th>
-              ))}
-              {actions.length > 0 && <th className="actions-header">Acciones</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item) => (
-              <tr key={item.id}>
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex}>
-                    {col.render ? col.render(item) : (item as any)[col.field]}
-                  </td>
+      ) : (
+        <section className="list-content">
+          <table>
+            <thead>
+              <tr>
+                {columns.map((col, index) => (
+                  <th key={index}>{col.header}</th>
                 ))}
-                {actions.length > 0 && (
-                  <td className="action-buttons">
-                    {actions.map((action, actionIndex) => (
-                      <button
-                        key={actionIndex}
-                        className={action.className}
-                        onClick={() => action.isDeleteAction ? handleDeleteClick(item.id) : action.onClick(item)}
-                      >
-                        {action.label}
-                      </button>
-                    ))}
-                  </td>
-                )}
+                {actions.length > 0 && <th className="actions-header">Acciones</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </section> 
+            </thead>
+            <tbody>
+              {data.map((item) => (
+                <tr key={item.id}>
+                  {columns.map((col, colIndex) => (
+                    <td key={colIndex}>
+                      {col.field === 'anio' && console.log(`Valor de 'anio' para el auto ${item.id}:`, (item as any)[col.field])}
+
+                      {col.render ? col.render(item) : (item as any)[col.field]}
+                    </td>
+                  ))}
+                  {actions.length > 0 && (
+                    <td className="action-buttons">
+                      {actions.map((action, actionIndex) => (
+                        <button
+                          key={actionIndex}
+                          className={action.className}
+                          onClick={() => action.isDeleteAction ? handleDeleteClick(item.id) : action.onClick(item)}
+                        >
+                          {action.label}
+                        </button>
+                      ))}
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
       )}
 
       {deletingId !== null && renderConfirmationModal()}

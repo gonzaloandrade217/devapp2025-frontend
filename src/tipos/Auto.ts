@@ -7,5 +7,5 @@ export interface Auto {
     color?:       string;
     numeroChasis?:string;
     numeroMotor?: string; 
-    personaId?:   string;
+    personaID?:   string;
   }

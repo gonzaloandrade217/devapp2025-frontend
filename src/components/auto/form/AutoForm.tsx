@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { Auto } from '../../../tipos/Auto';
 import '../../css/Form.css';
@@ -28,9 +28,9 @@ const AutoForm: React.FC<AutoFormProps> = ({
       color: data.color || '',
       numeroChasis: data.numeroChasis || '',
       numeroMotor: data.numeroMotor || '',
-      personaId: data.personaId || '',
+      personaID: data.personaID || '',
     };
-  }, []);
+  }, []); 
 
   const [formData, setFormData] = useState<AutoFormData>(() => getInitialFormData(initialData));
   const [error, setError] = useState<string | null>(null);
@@ -38,12 +38,16 @@ const AutoForm: React.FC<AutoFormProps> = ({
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<FormField, string>>>({});
   const navigate = useNavigate();
 
+  const prevInitialDataRef = useRef<Partial<AutoFormData>>(initialData);
+
+
   useEffect(() => {
-    if (initialData && JSON.stringify(initialData) !== JSON.stringify(formData)) {
+    if (JSON.stringify(initialData) !== JSON.stringify(prevInitialDataRef.current)) {
       setFormData(getInitialFormData(initialData));
-      console.log('AutoForm: formData actualizado con initialData. Modelo:', initialData.modelo); // <-- Agrega un log para verificar
+      prevInitialDataRef.current = initialData; 
     }
-  }, [initialData, getInitialFormData]);
+  }, [initialData, getInitialFormData]); 
+
 
   const validateForm = useCallback((): boolean => {
     const errors: Partial<Record<FormField, string>> = {
@@ -58,7 +62,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
           ? 'Formato de patente inválido (ej: AA123BB o AAA123).'
           : undefined,
       color: !(formData.color ?? '').trim() ? 'El color es requerido.' : undefined,
-      personaId: (!formData.personaId || typeof formData.personaId !== 'string' || formData.personaId.length === 0)
+      personaID: (!formData.personaID || typeof formData.personaID !== 'string' || formData.personaID.length === 0)
         ? 'El ID de la persona es requerido.'
         : undefined,
     };
@@ -101,7 +105,9 @@ const AutoForm: React.FC<AutoFormProps> = ({
     try {
       const success = await onSubmit(formData);
       setError(!success ? 'No se pudo guardar el auto. Verifica los datos o intenta más tarde.' : null);
-      success && navigate('/autos');
+      if (success) {
+        navigate('/autos');
+      }
     } catch (err) {
       const message = (err instanceof Error) ? err.message : 'Error desconocido';
       setError(`Error al enviar: ${message}`);
@@ -116,7 +122,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
       <label>{label}:</label>
       {readOnly ? (
         <div className="read-only-value">
-          {field === 'anio' || field === 'personaId' ? String(formData[field]) : formData[field]}
+          {field === 'anio' || field === 'personaID' ? String(formData[field]) : formData[field]}
         </div>
       ) : (
         <>
@@ -149,7 +155,7 @@ const AutoForm: React.FC<AutoFormProps> = ({
         {renderInputField('color', 'Color')}
         {renderInputField('numeroChasis', 'Número de Chasis')}
         {renderInputField('numeroMotor', 'Número de Motor')}
-        {renderInputField('personaId', 'ID de Persona')}
+        {renderInputField('personaID', 'ID de Persona')}
 
         {!readOnly && (
           <div className="form-actions">

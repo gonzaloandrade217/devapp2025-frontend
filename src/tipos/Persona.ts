@@ -1,3 +1,5 @@
+import { Auto } from "./Auto";
+
 export type Genero = 'Masculino' | 'Femenino' | 'No-Binario';
 
 export interface IPersonaBase {
@@ -7,6 +9,7 @@ export interface IPersonaBase {
     fechaNacimiento: Date; 
     genero: Genero;
     donanteOrganos: boolean;
+    autos?: Auto[];
 }
 
 export interface Persona extends IPersonaBase {
