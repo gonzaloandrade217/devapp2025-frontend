@@ -28,6 +28,8 @@ const PersonaEdit: React.FC = () => {
       try {
         const datosPersona = await obtenerPersonaPorId(id);
         setPersona(datosPersona);
+        console.log('Datos de la persona cargados:', datosPersona);
+        console.log('Fecha de Nacimiento:', datosPersona.fechaDeNacimiento, 'Tipo:', typeof datosPersona.fechaDeNacimiento);
       } catch (err) {
         console.error('Error al cargar la persona para editar:', err);
         setError('No se pudo cargar la persona para editar.');
@@ -115,14 +117,6 @@ const PersonaEdit: React.FC = () => {
     },
   ];
 
-  const handleAddAuto = () => {
-    if (persona && persona.id) {
-      navigate(`/autos/nuevo?personaId=${persona.id}`);
-    } else {
-      console.warn("No se puede agregar un auto, ID de persona no disponible.");
-    }
-  };
-
   if (cargando) {
     return <div className="loading-message">Cargando datos de la persona para editar...</div>;
   }
@@ -146,10 +140,6 @@ const PersonaEdit: React.FC = () => {
       />
 
       <div className="autos-section" style={{ marginTop: '30px' }}>
-        <h2 style={{ marginBottom: '15px', color: '#333' }}>Autos de {persona.nombre}</h2>
-        <button className="btn-green" onClick={handleAddAuto} style={{ marginBottom: '20px' }}>
-          Agregar nuevo auto
-        </button>
         <DataTable<Auto>
           title="Autos Asociados"
           data={persona.autos || []}
