@@ -52,7 +52,7 @@ const PersonasList: React.FC = () => {
     {
       label: 'Agregar Auto',
       className: 'btn-black',
-      onClick: () => navigate(`/autos/nuevo`),
+      onClick: (persona) => navigate(`/personas/${persona.id}/autos/nuevo`),
     },
   ];
 

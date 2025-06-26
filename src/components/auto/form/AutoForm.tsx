@@ -155,7 +155,6 @@ const AutoForm: React.FC<AutoFormProps> = ({
         {renderInputField('color', 'Color')}
         {renderInputField('numeroChasis', 'Número de Chasis')}
         {renderInputField('numeroMotor', 'Número de Motor')}
-        {renderInputField('personaID', 'ID de Persona')}
 
         {!readOnly && (
           <div className="form-actions">
