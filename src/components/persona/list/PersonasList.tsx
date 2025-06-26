@@ -49,6 +49,11 @@ const PersonasList: React.FC = () => {
       onClick: (_persona) => { /* La lógica del modal la maneja DataTable */ },
       isDeleteAction: true,
     },
+    {
+      label: 'Agregar Auto',
+      className: 'btn-black',
+      onClick: (persona) => navigate(`/personas/${persona.id}/autos/nuevo`),
+    },
   ];
 
   return (

@@ -24,7 +24,7 @@ const AppRoutes: React.FC = () => {
         <Route path="personas/:id/editar" element={<PersonaEdit />} />
 
         <Route path="autos" element={<AutosList />} />
-        <Route path="autos/nuevo" element={<AutoCreate />} />
+        <Route path="personas/:personaId/autos/nuevo" element={<AutoCreate />} />
         <Route path="autos/:id" element={<AutoView />} />
         <Route path="autos/:id/editar" element={<AutoEdit />} />
 

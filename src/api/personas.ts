@@ -19,14 +19,14 @@ function transformarDatosAuto(autoRaw: any): Auto {
 
     return {
         id: autoRaw._id ? (typeof autoRaw._id === 'object' && autoRaw._id.toHexString ? autoRaw._id.toHexString() : String(autoRaw._id)) : '',
-        patente: autoRaw.patente || undefined,
-        marca: autoRaw.marca || undefined,
-        modelo: autoRaw.modelo || undefined,
+        patente: autoRaw.patente || '',
+        marca: autoRaw.marca || '',
+        modelo: autoRaw.modelo || '',
         anio: parsedAnio,
-        color: autoRaw.color || undefined,
-        numeroChasis: autoRaw.numeroChasis || undefined,
-        numeroMotor: autoRaw.numeroMotor || undefined,
-        personaID: autoRaw.personaID || undefined
+        color: autoRaw.color || '',
+        numeroChasis: autoRaw.numeroChasis || '',
+        numeroMotor: autoRaw.numeroMotor || '',
+        personaID: autoRaw.personaID || ''
     };
 }
 
@@ -35,38 +35,32 @@ function transformarDatosPersona(rawData: any): Persona {
         throw new Error("Datos crudos (rawData) inválidos proporcionados para transformarDatosPersona");
     }
 
-    let fechaNacimientoConvertida: Date;
+    let fechaDeNacimientoString: string; 
 
-    if (rawData.fechaNacimiento && typeof rawData.fechaNacimiento === 'string') {
-        try {
-            const date = new Date(rawData.fechaNacimiento);
-            if (!isNaN(date.getTime())) {
-                fechaNacimientoConvertida = date;
-            } else {
-                console.warn('Fecha de nacimiento inválida encontrada en rawData; usando fecha actual:', rawData.fechaNacimiento);
-                fechaNacimientoConvertida = new Date();
-            }
-        } catch (e) {
-            console.warn('Error al parsear fechaNacimiento a Date desde rawData; usando fecha actual:', rawData.fechaNacimiento, e);
-            fechaNacimientoConvertida = new Date();
+    if (rawData.fechaDeNacimiento && typeof rawData.fechaDeNacimiento === 'string') {
+        const dateMatch = rawData.fechaDeNacimiento.match(/^(\d{4}-\d{2}-\d{2})/);
+        if (dateMatch && dateMatch[1]) {
+            fechaDeNacimientoString = dateMatch[1]; 
+        } else {
+            console.warn('Fecha de nacimiento string inválida o no en formato YYYY-MM-DD en rawData; usando string vacío:', rawData.fechaDeNacimiento);
+            fechaDeNacimientoString = '';
         }
-    } else if (rawData.fechaNacimiento instanceof Date) {
-        fechaNacimientoConvertida = rawData.fechaNacimiento;
     } else {
-        console.warn('fechaNacimiento no presente o con tipo inesperado en rawData; usando fecha actual.');
-        fechaNacimientoConvertida = new Date();
+        console.warn('fechaDeNacimiento no presente o con tipo inesperado en rawData; usando string vacío. Valor recibido:', rawData.fechaDeNacimiento);
+        fechaDeNacimientoString = '';
     }
 
     const autos = Array.isArray(rawData.autos) ? rawData.autos.map(transformarDatosAuto) : [];
 
     const transformed: Persona = {
         id: rawData._id ? (typeof rawData._id === 'object' && rawData._id.toHexString ? rawData._id.toHexString() : String(rawData._id)) : rawData.id || '',
+        _id: rawData._id, 
         dni: rawData.dni || '',
         nombre: rawData.nombre || '',
         apellido: rawData.apellido || '',
         genero: rawData.genero || 'No-Binario',
         donanteOrganos: typeof rawData.donanteOrganos === 'boolean' ? rawData.donanteOrganos : false,
-        fechaNacimiento: fechaNacimientoConvertida,
+        fechaDeNacimiento: fechaDeNacimientoString,
         autos: autos
     };
 
@@ -81,7 +75,7 @@ function isPersona(data: any): data is Persona {
         typeof data.dni === 'string' &&
         typeof data.nombre === 'string' &&
         typeof data.apellido === 'string' &&
-        data.fechaNacimiento instanceof Date && 
+        typeof data.fechaDeNacimiento === 'string' && 
         (data.genero === 'Masculino' || data.genero === 'Femenino' || data.genero === 'No-Binario') &&
         typeof data.donanteOrganos === 'boolean' &&
         (Array.isArray(data.autos) || data.autos === undefined || data.autos === null)

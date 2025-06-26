@@ -6,7 +6,7 @@ export interface IPersonaBase {
     dni: string;
     nombre: string;
     apellido: string;
-    fechaNacimiento: Date; 
+    fechaDeNacimiento: string; 
     genero: Genero;
     donanteOrganos: boolean;
     autos?: Auto[];
@@ -14,6 +14,8 @@ export interface IPersonaBase {
 
 export interface Persona extends IPersonaBase {
     id: string; 
+    _id?: any;
+    autos?: any[];
 }
 
 export interface PersonaRawBackend extends IPersonaBase {
