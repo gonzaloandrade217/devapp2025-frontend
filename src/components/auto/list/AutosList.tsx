@@ -47,16 +47,16 @@ const AutosList: React.FC = () => {
 
   return (
   <DataTable<Auto>
-        title="Autos"
-        data={autos}
-        columns={autoColumns}
-        actions={autoActions}
-        loading={loading}
-        error={error}
-        onDeleteConfirm={deleteAuto}
-        isDeleting={isDeleting}
-        deleteError={deleteError}
-        onClearDeleteError={clearDeleteError} />
+      title="Autos"
+      data={autos}
+      columns={autoColumns}
+      actions={autoActions}
+      loading={loading}
+      error={error}
+      onDeleteConfirm={deleteAuto}
+      isDeleting={isDeleting}
+      deleteError={deleteError}
+      onClearDeleteError={clearDeleteError} keyField={"marca"} />
   );
 };
 

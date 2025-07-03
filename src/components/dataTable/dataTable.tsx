@@ -33,6 +33,7 @@ export interface DataTableProps<T extends { id: string }> {
   onClearDeleteError?: () => void;
 
   showAddButton?: boolean;
+  keyField: keyof T; 
 }
 
 const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
@@ -50,7 +51,8 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
     isDeleting = false,
     deleteError = null,
     onClearDeleteError,
-    showAddButton = true, 
+    showAddButton = true,
+    keyField, 
   } = props;
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -139,11 +141,11 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
               </tr>
             </thead>
             <tbody>
-              {data.map((item) => (
-                <tr key={item.id}>
+              {data.map((item, index) => (
+                <tr key={String(item[keyField]) || `fallback-${index}`}>
                   {columns.map((col, colIndex) => (
                     <td key={colIndex}>
-                      {col.field === 'anio' && console.log(`Valor de 'anio' para el auto ${item.id}:`, (item as any)[col.field])}
+                      {col.field === 'anio' && console.log(`Valor de 'anio' para el auto ${String(item[keyField]) || 'ID_VACIO'}:`, (item as any)[col.field])}
 
                       {col.render ? col.render(item) : (item as any)[col.field]}
                     </td>
@@ -155,6 +157,7 @@ const DataTable = <T extends { id: string }>(props: DataTableProps<T>) => {
                           key={actionIndex}
                           className={action.className}
                           onClick={() => action.isDeleteAction ? handleDeleteClick(item.id) : action.onClick(item)}
+                          disabled={isDeleting}
                         >
                           {action.label}
                         </button>

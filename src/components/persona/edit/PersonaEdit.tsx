@@ -27,8 +27,10 @@ const PersonaEdit: React.FC = () => {
       }
       try {
         const datosPersona = await obtenerPersonaPorId(id);
+        console.log('DEBUG (Frontend API Response): Datos de la persona recibidos de la API:', datosPersona);
         setPersona(datosPersona);
         console.log('Datos de la persona cargados:', datosPersona);
+        console.log('DEBUG: Array de autos para DataTable:', datosPersona.autos);
         console.log('Fecha de Nacimiento:', datosPersona.fechaDeNacimiento, 'Tipo:', typeof datosPersona.fechaDeNacimiento);
       } catch (err) {
         console.error('Error al cargar la persona para editar:', err);
@@ -73,14 +75,18 @@ const PersonaEdit: React.FC = () => {
     setIsDeletingAuto(true);
     setDeleteAutoError(null);
     try {
+        console.log(`DEBUG: Intentando eliminar auto con ID: ${autoId}`);
         const success = await eliminarAuto(autoId);
+        console.log(`DEBUG: Resultado de eliminarAuto para ID ${autoId}: ${success}`);
         if (success) {
             if (persona) {
                 setPersona(prevPersona => {
                     if (!prevPersona) return null;
+                    const updatedAutos = prevPersona.autos?.filter(auto => auto.id !== autoId) || [];
+                    console.log('DEBUG: Autos después de filtrar:', updatedAutos);
                     return {
                         ...prevPersona,
-                        autos: prevPersona.autos?.filter(auto => auto.id !== autoId) || []
+                        autos: updatedAutos
                     };
                 });
             }
@@ -105,15 +111,10 @@ const PersonaEdit: React.FC = () => {
       onClick: (auto) => navigate(`/autos/${auto.id}`),
     },
     {
-      label: 'Editar',
-      className: 'btn-yellow',
-      onClick: (auto) => navigate(`/autos/${auto.id}/editar`),
-    },
-    {
       label: 'Borrar',
       className: 'btn-red',
+      onClick: (_auto) => { /* El DataTable manejará el modal internamente */ },
       isDeleteAction: true,
-      onClick: (auto) => console.log(`Iniciando borrado de auto con ID: ${auto.id}`),
     },
   ];
 
@@ -152,6 +153,7 @@ const PersonaEdit: React.FC = () => {
           addBtnText=""
           onAdd={() => {}}
           showAddButton={false}
+          keyField="id"
         />
         {deleteAutoError && <div className="error-message">{deleteAutoError}</div>}
       </div>
